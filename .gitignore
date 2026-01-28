@@ -1,0 +1,25 @@
+# Prerequisites
+*.d
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dll
+*.dylib
+*.exe
+
+# Build Directories
+build/
+out/
+cmake-build-debug/
+.vs/
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+C++Tutotrial.md
+tutorial.md
+main.cpp
