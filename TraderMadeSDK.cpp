@@ -12,6 +12,8 @@
 #include <cstdio>
 #include <array>
 #include <cctype>
+#include <nlohmann/json.hpp> 
+
 
 // --- Internal Implementation Details ---
 
@@ -145,73 +147,77 @@ std::string TraderMade::getRestApiKey() const {
     return this->apiKey;
 }
 
-std::string TraderMade::getLiveRates(const std::string& currency) {
+// --- CHANGED FUNCTIONS START HERE ---
+// All return types changed to nlohmann::json
+// All return statements wrapped in nlohmann::json::parse()
+
+nlohmann::json TraderMade::getLiveRates(const std::string& currency) {
     ensureClient();
     if (currency.empty()) {
         throw std::invalid_argument("currency is required.");
     }
-    return client->get("/live", {{"currency", currency}});
+    return nlohmann::json::parse(client->get("/live", {{"currency", currency}}));
 }
 
-std::string TraderMade::getLiveCurrencyList() {
+nlohmann::json TraderMade::getLiveCurrencyList() {
     ensureClient();
-    return client->get("/live_currencies_list");
+    return nlohmann::json::parse(client->get("/live_currencies_list"));
 }
 
-std::string TraderMade::getStreamingCurrencyList() {
+nlohmann::json TraderMade::getStreamingCurrencyList() {
     ensureClient();
-    return client->get("/streaming_currencies_list");
+    return nlohmann::json::parse(client->get("/streaming_currencies_list"));
 }
 
-std::string TraderMade::getCryptoList() {
+nlohmann::json TraderMade::getCryptoList() {
     ensureClient();
-    return client->get("/live_crypto_list");
+    return nlohmann::json::parse(client->get("/live_crypto_list"));
 }
 
-std::string TraderMade::getHistoricalCurrencyList() {
+nlohmann::json TraderMade::getHistoricalCurrencyList() {
     ensureClient();
-    return client->get("/historical_currencies_list");
+    return nlohmann::json::parse(client->get("/historical_currencies_list"));
 }
 
-std::string TraderMade::getCfdList() {
+nlohmann::json TraderMade::getCfdList() {
     ensureClient();
-    return client->get("/cfd_list");
+    return nlohmann::json::parse(client->get("/cfd_list"));
 }
 
-std::string TraderMade::getHistoricalRates(const std::string& date, const std::string& symbol) {
+nlohmann::json TraderMade::getHistoricalRates(const std::string& date, const std::string& symbol) {
     ensureClient();
     if (date.empty() || symbol.empty()) {
         throw std::invalid_argument("date and symbol are required.");
     }
-    return client->get("/historical", {{"currency", symbol}, {"date", date}});
+    return nlohmann::json::parse(client->get("/historical", {{"currency", symbol}, {"date", date}}));
 }
 
-std::string TraderMade::getHourlyHistoricalData(const std::string& date_time, const std::string& symbol) {
+nlohmann::json TraderMade::getHourlyHistoricalData(const std::string& date_time, const std::string& symbol) {
     ensureClient();
     if (date_time.empty() || symbol.empty()) {
         throw std::invalid_argument("date_time and symbol are required.");
     }
-    return client->get("/hour_historical", {
+    return nlohmann::json::parse(client->get("/hour_historical", {
         {"date_time", date_time},
         {"currency",  symbol}
-    });
+    }));
 }
 
-std::string TraderMade::getMinuteHistoricalData(const std::string& date_time, const std::string& symbol) {
+nlohmann::json TraderMade::getMinuteHistoricalData(const std::string& date_time, const std::string& symbol) {
     ensureClient();
     if (date_time.empty() || symbol.empty()) {
         throw std::invalid_argument("date_time and symbol are required.");
     }
-    return client->get("/minute_historical", {
+    return nlohmann::json::parse(client->get("/minute_historical", {
         {"date_time", date_time},
         {"currency",  symbol}
-    });
+    }));
 }
 
-std::string TraderMade::getTickHistoricalData(const std::string& symbol,
-                                              const std::string& startDate,
-                                              const std::string& endDate,
-                                              const std::string& format) {
+nlohmann::json TraderMade::getTickHistoricalData(const std::string& symbol,
+                                                 const std::string& startDate,
+                                                 const std::string& endDate,
+                                                 const std::string& format) {
     ensureClient();
     if (symbol.empty() || startDate.empty() || endDate.empty()) {
         throw std::invalid_argument("symbol, startDate and endDate are required.");
@@ -223,13 +229,13 @@ std::string TraderMade::getTickHistoricalData(const std::string& symbol,
     if (!format.empty()) {
         params["format"] = format;
     }
-    return client->get(endpoint, params);
+    return nlohmann::json::parse(client->get(endpoint, params));
 }
 
-std::string TraderMade::getTickHistoricalDataSample(const std::string& symbol,
-                                                    const std::string& startDate,
-                                                    const std::string& endDate,
-                                                    const std::string& format) {
+nlohmann::json TraderMade::getTickHistoricalDataSample(const std::string& symbol,
+                                                       const std::string& startDate,
+                                                       const std::string& endDate,
+                                                       const std::string& format) {
     ensureClient();
     if (symbol.empty() || startDate.empty() || endDate.empty() || format.empty()) {
         throw std::invalid_argument("symbol, startDate, endDate and format are required.");
@@ -237,15 +243,15 @@ std::string TraderMade::getTickHistoricalDataSample(const std::string& symbol,
     std::string start = urlEncode(startDate);
     std::string end   = urlEncode(endDate);
     std::string endpoint = "/tick_historical_sample/" + symbol + "/" + start + "/" + end;
-    return client->get(endpoint, {{"format", format}});
+    return nlohmann::json::parse(client->get(endpoint, {{"format", format}}));
 }
 
-std::string TraderMade::getTimeSeriesData(const std::string& currency,
-                                          const std::string& startDate,
-                                          const std::string& endDate,
-                                          const std::string& interval,
-                                          const std::string& period,
-                                          const std::string& format) {
+nlohmann::json TraderMade::getTimeSeriesData(const std::string& currency,
+                                             const std::string& startDate,
+                                             const std::string& endDate,
+                                             const std::string& interval,
+                                             const std::string& period,
+                                             const std::string& format) {
     ensureClient();
 
     // Validate format
@@ -286,42 +292,42 @@ std::string TraderMade::getTimeSeriesData(const std::string& currency,
         throw std::invalid_argument(oss.str());
     }
 
-    return client->get("/timeseries", {
+    return nlohmann::json::parse(client->get("/timeseries", {
         {"currency",   currency},
         {"start_date", startDate},
         {"end_date",   endDate},
         {"interval",   interval},
         {"period",     std::to_string(periodNum)},
         {"format",     format}
-    });
+    }));
 }
 
-std::string TraderMade::getOpenMarketStatus() {
+nlohmann::json TraderMade::getOpenMarketStatus() {
     ensureClient();
-    return client->get("/market_open_status");
+    return nlohmann::json::parse(client->get("/market_open_status"));
 }
 
-std::string TraderMade::getMarketOpenTiming() {
+nlohmann::json TraderMade::getMarketOpenTiming() {
     ensureClient();
-    return client->get("/market_opening_times");
+    return nlohmann::json::parse(client->get("/market_opening_times"));
 }
 
-std::string TraderMade::getCurrencyConversion(const std::string& from,
-                                              const std::string& to,
-                                              double amount) {
+nlohmann::json TraderMade::getCurrencyConversion(const std::string& from,
+                                                 const std::string& to,
+                                                 double amount) {
     ensureClient();
-    return client->get("/convert", {
+    return nlohmann::json::parse(client->get("/convert", {
         {"from",   from},
         {"to",     to},
         {"amount", std::to_string(amount)}
-    });
+    }));
 }
 
-std::string TraderMade::getDataAsPandasDataFrame(const std::string& symbol,
-                                                 const std::string& startDate,
-                                                 const std::string& endDate,
-                                                 const std::string& format,
-                                                 const std::string& fields) {
+nlohmann::json TraderMade::getDataAsPandasDataFrame(const std::string& symbol,
+                                                    const std::string& startDate,
+                                                    const std::string& endDate,
+                                                    const std::string& format,
+                                                    const std::string& fields) {
     ensureClient();
 
     if (std::find(Constants::DATA_EXPORTS_PANDAS_DF_FORMAT.begin(),
@@ -336,11 +342,11 @@ std::string TraderMade::getDataAsPandasDataFrame(const std::string& symbol,
         throw std::invalid_argument("Invalid fields for pandasDF.");
     }
 
-    return client->get("/pandasDF", {
+    return nlohmann::json::parse(client->get("/pandasDF", {
         {"currency",   symbol},
         {"start_date", startDate},
         {"end_date",   endDate},
         {"format",     format},
         {"fields",     fields}
-    });
+    }));
 }

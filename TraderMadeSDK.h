@@ -4,7 +4,7 @@
 #include <string>
 #include <memory>
 #include <vector>
-
+#include <nlohmann/json.hpp> // <--- NEW: Required for JSON types
 
 class Client;
 
@@ -18,56 +18,57 @@ public:
     // Get REST API key
     std::string getRestApiKey() const;
 
+    // --- RETURN TYPES CHANGED TO nlohmann::json BELOW ---
+
     // 1. Live Rates
-    std::string getLiveRates(const std::string& currency);
+    nlohmann::json getLiveRates(const std::string& currency);
 
     // 2. Reference Data
-    std::string getLiveCurrencyList();
-    std::string getStreamingCurrencyList();
-    std::string getCryptoList();
-    std::string getHistoricalCurrencyList();
-    std::string getCfdList();
+    nlohmann::json getLiveCurrencyList();
+    nlohmann::json getStreamingCurrencyList();
+    nlohmann::json getCryptoList();
+    nlohmann::json getHistoricalCurrencyList();
+    nlohmann::json getCfdList();
 
     // 3. Get Historical Exchange Rates
-    std::string getHistoricalRates(const std::string& date, const std::string& symbol);
-    std::string getHourlyHistoricalData(const std::string& date_time, const std::string& symbol);
-    std::string getMinuteHistoricalData(const std::string& date_time, const std::string& symbol);
+    nlohmann::json getHistoricalRates(const std::string& date, const std::string& symbol);
+    nlohmann::json getHourlyHistoricalData(const std::string& date_time, const std::string& symbol);
+    nlohmann::json getMinuteHistoricalData(const std::string& date_time, const std::string& symbol);
 
     // 4. Tick Historical Data
-    // Note: Default argument moved here from implementation
-    std::string getTickHistoricalData(const std::string& symbol,
-                                      const std::string& startDate,
-                                      const std::string& endDate,
-                                      const std::string& format = "");
-
-    std::string getTickHistoricalDataSample(const std::string& symbol,
-                                            const std::string& startDate,
-                                            const std::string& endDate,
-                                            const std::string& format);
-
-    // 5. Time Series Data
-    std::string getTimeSeriesData(const std::string& currency,
-                                  const std::string& startDate,
-                                  const std::string& endDate,
-                                  const std::string& interval,
-                                  const std::string& period,
-                                  const std::string& format);
-
-    // 6. Market Status
-    std::string getOpenMarketStatus();
-    std::string getMarketOpenTiming();
-
-    // 7. Currency Conversion
-    std::string getCurrencyConversion(const std::string& from,
-                                      const std::string& to,
-                                      double amount);
-
-    // 8. Pandas DataFrame Export
-    std::string getDataAsPandasDataFrame(const std::string& symbol,
+    nlohmann::json getTickHistoricalData(const std::string& symbol,
                                          const std::string& startDate,
                                          const std::string& endDate,
-                                         const std::string& format,
-                                         const std::string& fields);
+                                         const std::string& format = "");
+
+    nlohmann::json getTickHistoricalDataSample(const std::string& symbol,
+                                               const std::string& startDate,
+                                               const std::string& endDate,
+                                               const std::string& format);
+
+    // 5. Time Series Data
+    nlohmann::json getTimeSeriesData(const std::string& currency,
+                                     const std::string& startDate,
+                                     const std::string& endDate,
+                                     const std::string& interval,
+                                     const std::string& period,
+                                     const std::string& format);
+
+    // 6. Market Status
+    nlohmann::json getOpenMarketStatus();
+    nlohmann::json getMarketOpenTiming();
+
+    // 7. Currency Conversion
+    nlohmann::json getCurrencyConversion(const std::string& from,
+                                         const std::string& to,
+                                         double amount);
+
+    // 8. Pandas DataFrame Export
+    nlohmann::json getDataAsPandasDataFrame(const std::string& symbol,
+                                            const std::string& startDate,
+                                            const std::string& endDate,
+                                            const std::string& format,
+                                            const std::string& fields);
 
 private:
     std::string apiKey;
@@ -77,4 +78,4 @@ private:
     void ensureClient() const;
 };
 
-#endif 
+#endif
